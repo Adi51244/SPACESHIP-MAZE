@@ -1,7 +1,11 @@
-// ===== SPACESHIP MAZE PUZZLE GAME v2.8 =====
-console.log('🚀 Game script v2.8 loaded successfully!');
-console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting, 3-minute timer');
-console.log('🔧 Fixed: Initialization protection and event listener deduplication system');
+// ===== SPACESHIP MAZE PUZZLE GAME v3.1 - MOBILE OPTIMIZED =====
+console.log('🚀 Game script v3.1 loaded successfully!');
+console.log('🎮 MAJOR UPDATE: 25 levels across 5 difficulty tiers!');
+console.log('📱 MOBILE UPDATE: Enhanced responsive design for all phone sizes!');
+console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting');
+console.log('🆕 New: Beginner→Intermediate→Advanced→Expert→Master progression');
+console.log('🏆 New: Enhanced scoring system with difficulty multipliers and ranking');
+console.log('📱 New: Dynamic responsive grid sizing and mobile touch optimization');
 
 // ===== GAME STATE =====
 const gameState = {
@@ -118,15 +122,16 @@ function generateLevelTiles(levelNum) {
     return tiles;
 }
 
-// ===== LEVEL CONFIGURATIONS =====
+// ===== EXPANDED LEVEL CONFIGURATIONS =====
 const levels = [
+    // === BEGINNER LEVELS (1-5) ===
     {
         level: 1,
         gridSize: { rows: 4, cols: 4 },
         startPos: { row: 2, col: 0 },
         endPos: { row: 1, col: 3 },
         optimalMoves: 6,
-        timeLimit: 180,
+        timeLimit: 240, // 4 minutes for beginners
         tiles: null
     },
     {
@@ -135,7 +140,7 @@ const levels = [
         startPos: { row: 2, col: 0 },
         endPos: { row: 2, col: 4 },
         optimalMoves: 8,
-        timeLimit: 180,
+        timeLimit: 220,
         tiles: null
     },
     {
@@ -144,7 +149,7 @@ const levels = [
         startPos: { row: 2, col: 0 },
         endPos: { row: 3, col: 4 },
         optimalMoves: 10,
-        timeLimit: 180,
+        timeLimit: 200,
         tiles: null
     },
     {
@@ -153,7 +158,7 @@ const levels = [
         startPos: { row: 2, col: 0 },
         endPos: { row: 3, col: 5 },
         optimalMoves: 12,
-        timeLimit: 180,
+        timeLimit: 200,
         tiles: null
     },
     {
@@ -163,6 +168,194 @@ const levels = [
         endPos: { row: 2, col: 5 },
         optimalMoves: 15,
         timeLimit: 180,
+        tiles: null
+    },
+    
+    // === INTERMEDIATE LEVELS (6-10) ===
+    {
+        level: 6,
+        gridSize: { rows: 6, cols: 7 },
+        startPos: { row: 0, col: 0 },
+        endPos: { row: 5, col: 6 },
+        optimalMoves: 18,
+        timeLimit: 180,
+        tiles: null
+    },
+    {
+        level: 7,
+        gridSize: { rows: 7, cols: 7 },
+        startPos: { row: 3, col: 0 },
+        endPos: { row: 3, col: 6 },
+        optimalMoves: 20,
+        timeLimit: 160,
+        tiles: null
+    },
+    {
+        level: 8,
+        gridSize: { rows: 7, cols: 8 },
+        startPos: { row: 1, col: 0 },
+        endPos: { row: 5, col: 7 },
+        optimalMoves: 22,
+        timeLimit: 160,
+        tiles: null
+    },
+    {
+        level: 9,
+        gridSize: { rows: 8, cols: 8 },
+        startPos: { row: 0, col: 3 },
+        endPos: { row: 7, col: 4 },
+        optimalMoves: 25,
+        timeLimit: 150,
+        tiles: null
+    },
+    {
+        level: 10,
+        gridSize: { rows: 8, cols: 9 },
+        startPos: { row: 2, col: 0 },
+        endPos: { row: 6, col: 8 },
+        optimalMoves: 28,
+        timeLimit: 150,
+        tiles: null
+    },
+    
+    // === ADVANCED LEVELS (11-15) ===
+    {
+        level: 11,
+        gridSize: { rows: 9, cols: 9 },
+        startPos: { row: 4, col: 0 },
+        endPos: { row: 4, col: 8 },
+        optimalMoves: 30,
+        timeLimit: 140,
+        tiles: null
+    },
+    {
+        level: 12,
+        gridSize: { rows: 9, cols: 10 },
+        startPos: { row: 0, col: 2 },
+        endPos: { row: 8, col: 7 },
+        optimalMoves: 32,
+        timeLimit: 140,
+        tiles: null
+    },
+    {
+        level: 13,
+        gridSize: { rows: 10, cols: 10 },
+        startPos: { row: 1, col: 1 },
+        endPos: { row: 8, col: 8 },
+        optimalMoves: 35,
+        timeLimit: 130,
+        tiles: null
+    },
+    {
+        level: 14,
+        gridSize: { rows: 10, cols: 11 },
+        startPos: { row: 5, col: 0 },
+        endPos: { row: 4, col: 10 },
+        optimalMoves: 38,
+        timeLimit: 130,
+        tiles: null
+    },
+    {
+        level: 15,
+        gridSize: { rows: 11, cols: 11 },
+        startPos: { row: 0, col: 5 },
+        endPos: { row: 10, col: 5 },
+        optimalMoves: 40,
+        timeLimit: 120,
+        tiles: null
+    },
+    
+    // === EXPERT LEVELS (16-20) ===
+    {
+        level: 16,
+        gridSize: { rows: 11, cols: 12 },
+        startPos: { row: 2, col: 1 },
+        endPos: { row: 9, col: 10 },
+        optimalMoves: 42,
+        timeLimit: 120,
+        tiles: null
+    },
+    {
+        level: 17,
+        gridSize: { rows: 12, cols: 12 },
+        startPos: { row: 6, col: 0 },
+        endPos: { row: 5, col: 11 },
+        optimalMoves: 45,
+        timeLimit: 110,
+        tiles: null
+    },
+    {
+        level: 18,
+        gridSize: { rows: 12, cols: 13 },
+        startPos: { row: 0, col: 6 },
+        endPos: { row: 11, col: 6 },
+        optimalMoves: 48,
+        timeLimit: 110,
+        tiles: null
+    },
+    {
+        level: 19,
+        gridSize: { rows: 13, cols: 13 },
+        startPos: { row: 3, col: 2 },
+        endPos: { row: 10, col: 11 },
+        optimalMoves: 50,
+        timeLimit: 100,
+        tiles: null
+    },
+    {
+        level: 20,
+        gridSize: { rows: 14, cols: 14 },
+        startPos: { row: 1, col: 1 },
+        endPos: { row: 12, col: 12 },
+        optimalMoves: 55,
+        timeLimit: 100,
+        tiles: null
+    },
+    
+    // === MASTER LEVELS (21-25) ===
+    {
+        level: 21,
+        gridSize: { rows: 14, cols: 15 },
+        startPos: { row: 7, col: 0 },
+        endPos: { row: 6, col: 14 },
+        optimalMoves: 58,
+        timeLimit: 90,
+        tiles: null
+    },
+    {
+        level: 22,
+        gridSize: { rows: 15, cols: 15 },
+        startPos: { row: 0, col: 7 },
+        endPos: { row: 14, col: 7 },
+        optimalMoves: 60,
+        timeLimit: 90,
+        tiles: null
+    },
+    {
+        level: 23,
+        gridSize: { rows: 15, cols: 16 },
+        startPos: { row: 4, col: 2 },
+        endPos: { row: 11, col: 13 },
+        optimalMoves: 65,
+        timeLimit: 85,
+        tiles: null
+    },
+    {
+        level: 24,
+        gridSize: { rows: 16, cols: 16 },
+        startPos: { row: 2, col: 3 },
+        endPos: { row: 13, col: 12 },
+        optimalMoves: 70,
+        timeLimit: 85,
+        tiles: null
+    },
+    {
+        level: 25,
+        gridSize: { rows: 18, cols: 18 },
+        startPos: { row: 1, col: 1 },
+        endPos: { row: 16, col: 16 },
+        optimalMoves: 80,
+        timeLimit: 80,
         tiles: null
     }
 ];
@@ -333,13 +526,31 @@ function renderGrid() {
     mazeGrid.innerHTML = '';
     
     const { rows, cols } = gameState.gridSize;
-    mazeGrid.style.gridTemplateColumns = `repeat(${cols}, 100px)`;
-    mazeGrid.style.gridTemplateRows = `repeat(${rows}, 100px)`;
-
-    console.log('Rendering grid:', rows, 'x', cols, 'Total tiles:', gameState.grid.length);
+    
+    // Set CSS custom properties for mobile responsive design
+    document.documentElement.style.setProperty('--grid-rows', rows);
+    document.documentElement.style.setProperty('--grid-cols', cols);
+    
+    // Dynamic grid sizing - smaller tiles for larger grids
+    const isMobile = window.innerWidth <= 768;
+    let tileSize;
+    
+    if (isMobile) {
+        // Mobile: Responsive tile sizing based on screen and grid size
+        const maxGridWidth = Math.min(window.innerWidth * 0.9, 400);
+        tileSize = Math.max(30, Math.floor(maxGridWidth / Math.max(cols, rows)));
+    } else {
+        // Desktop: Fixed sizing with minimum for large grids
+        tileSize = Math.max(80, Math.floor(600 / Math.max(cols, rows)));
+    }
+    
+    mazeGrid.style.gridTemplateColumns = `repeat(${cols}, ${tileSize}px)`;
+    mazeGrid.style.gridTemplateRows = `repeat(${rows}, ${tileSize}px)`;
+    
+    console.log(`📱 Rendering ${rows}x${cols} grid with ${tileSize}px tiles (Mobile: ${isMobile})`);
 
     gameState.grid.forEach((tile, index) => {
-    const tileElement = createTileElement(tile, index);
+        const tileElement = createTileElement(tile, index);
         
         // Add start indicator (spaceship)
         const startIndex = gameState.startPos.row * cols + gameState.startPos.col;
@@ -966,22 +1177,37 @@ function updateTimerDisplay() {
         `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// ===== SCORING =====
+// ===== ENHANCED SCORING SYSTEM =====
 function calculateScore() {
+    const difficultyInfo = getLevelDifficulty(gameState.currentLevel);
     const baseScore = 1000;
+    
+    // Difficulty multiplier increases with level
+    const difficultyMultiplier = 1 + (gameState.currentLevel - 1) * 0.1;
+    
     const moveEfficiency = Math.max(0, 1 - (gameState.moves - gameState.optimalMoves) / gameState.optimalMoves);
     const timeEfficiency = gameState.timeRemaining / gameState.timeLimit;
     
-    const moveBonus = Math.floor(baseScore * moveEfficiency * 0.5);
-    const timeBonus = Math.floor(baseScore * timeEfficiency * 0.3);
+    const moveBonus = Math.floor(baseScore * moveEfficiency * 0.5 * difficultyMultiplier);
+    const timeBonus = Math.floor(baseScore * timeEfficiency * 0.3 * difficultyInfo.timeBonus);
     
     let perfectBonus = 0;
     if (gameState.moves === gameState.optimalMoves) {
-        perfectBonus = 500;
+        perfectBonus = Math.floor(500 * difficultyMultiplier);
     }
     
-    const levelScore = baseScore + moveBonus + timeBonus + perfectBonus;
+    // Level completion bonus increases with difficulty
+    const levelBonus = Math.floor(baseScore * difficultyMultiplier);
+    
+    const levelScore = levelBonus + moveBonus + timeBonus + perfectBonus;
     gameState.score += levelScore;
+    
+    console.log(`🏆 Level ${gameState.currentLevel} Score Breakdown:
+    - Level Bonus: ${levelBonus} (${difficultyInfo.name})
+    - Move Bonus: ${moveBonus} (${(moveEfficiency * 100).toFixed(1)}% efficiency)
+    - Time Bonus: ${timeBonus} (${(timeEfficiency * 100).toFixed(1)}% remaining)
+    - Perfect Bonus: ${perfectBonus}
+    - Total: ${levelScore}`);
     
     return levelScore;
 }
@@ -1049,7 +1275,13 @@ function nextLevel() {
 
 // ===== DISPLAY UPDATES =====
 function updateDisplay() {
-    document.getElementById('levelDisplay').textContent = gameState.currentLevel;
+    const levelElement = document.getElementById('levelDisplay');
+    const difficultyInfo = getLevelDifficulty(gameState.currentLevel);
+    
+    levelElement.textContent = `${gameState.currentLevel}/${levels.length}`;
+    levelElement.style.color = difficultyInfo.color;
+    levelElement.title = `${difficultyInfo.name} Level - ${difficultyInfo.description}`;
+    
     document.getElementById('movesDisplay').textContent = gameState.moves;
     document.getElementById('optimalMoves').textContent = gameState.optimalMoves;
     document.getElementById('scoreDisplay').textContent = gameState.score;
@@ -1060,10 +1292,52 @@ function updateDisplay() {
     if (nextLevelBtn) {
         nextLevelBtn.disabled = gameState.currentLevel >= levels.length;
         if (gameState.currentLevel >= levels.length) {
-            nextLevelBtn.querySelector('span').textContent = 'Max Level';
+            nextLevelBtn.querySelector('span').textContent = 'COMPLETE!';
+            nextLevelBtn.style.background = 'linear-gradient(135deg, #00ff88, #00d9ff)';
         } else {
             nextLevelBtn.querySelector('span').textContent = 'Next Level';
+            nextLevelBtn.style.background = '';
         }
+    }
+}
+
+// ===== LEVEL DIFFICULTY SYSTEM =====
+function getLevelDifficulty(level) {
+    if (level <= 5) {
+        return {
+            name: "BEGINNER",
+            description: "Learning the basics",
+            color: "#00ff88", // Green
+            timeBonus: 1.2
+        };
+    } else if (level <= 10) {
+        return {
+            name: "INTERMEDIATE", 
+            description: "Getting more complex",
+            color: "#00d9ff", // Cyan
+            timeBonus: 1.1
+        };
+    } else if (level <= 15) {
+        return {
+            name: "ADVANCED",
+            description: "Serious challenges",
+            color: "#ffa500", // Orange
+            timeBonus: 1.0
+        };
+    } else if (level <= 20) {
+        return {
+            name: "EXPERT",
+            description: "For puzzle masters",
+            color: "#ff00ff", // Magenta
+            timeBonus: 0.9
+        };
+    } else {
+        return {
+            name: "MASTER",
+            description: "Ultimate challenge",
+            color: "#ff4444", // Red
+            timeBonus: 0.8
+        };
     }
 }
 
@@ -1150,29 +1424,93 @@ function showGameCompleteModal() {
     const existingModals = document.querySelectorAll('.modal.active');
     existingModals.forEach(modal => modal.remove());
     
+    const averageScore = Math.floor(gameState.score / levels.length);
+    const finalRank = getFinalRank(gameState.score);
+    
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
         <div class="modal-content success-content">
-            <div class="success-icon">🏆</div>
-            <h2>Game Complete!</h2>
-            <p style="color: var(--text-gray); margin: 20px 0;">
-                Congratulations! You've completed all levels!
+            <div class="success-icon">�</div>
+            <h2>🏆 SPACESHIP MAZE MASTER! 🏆</h2>
+            <p style="color: var(--primary-color); font-size: 18px; margin: 20px 0; text-align: center;">
+                You've conquered all ${levels.length} levels across 5 difficulty tiers!
             </p>
-            <div class="success-stats">
+            <div class="success-stats" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0;">
                 <div class="stat-item">
-                    <span class="stat-label">Total Score</span>
-                    <span class="stat-value score-value">${gameState.score}</span>
+                    <span class="stat-label">🎯 Total Score</span>
+                    <span class="stat-value score-value" style="font-size: 24px; color: var(--accent-color);">${gameState.score.toLocaleString()}</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">Levels Completed</span>
-                    <span class="stat-value">${levels.length}</span>
+                    <span class="stat-label">📊 Average per Level</span>
+                    <span class="stat-value">${averageScore.toLocaleString()}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🏅 Final Rank</span>
+                    <span class="stat-value" style="color: ${finalRank.color};">${finalRank.title}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🎮 Levels Mastered</span>
+                    <span class="stat-value">${levels.length}/25</span>
                 </div>
             </div>
-            <button class="next-level-btn" onclick="location.reload()">Play Again</button>
+            <div style="text-align: center; margin: 20px 0; padding: 15px; background: rgba(0,217,255,0.1); border-radius: 10px;">
+                <h3 style="color: var(--primary-color); margin-bottom: 10px;">🌟 Achievement Unlocked! 🌟</h3>
+                <p style="color: var(--text-light);">${finalRank.description}</p>
+            </div>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="next-level-btn" onclick="location.reload()" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));">
+                    🔄 Play Again
+                </button>
+                <button class="next-level-btn" onclick="this.parentElement.parentElement.parentElement.remove()" style="background: linear-gradient(135deg, var(--accent-color), var(--primary-color));">
+                    🎊 Celebrate
+                </button>
+            </div>
+            <div class="modal-watermark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>Congratulations, Puzzle Master!</span>
+            </div>
         </div>
     `;
     document.body.appendChild(modal);
+}
+
+// ===== RANKING SYSTEM =====
+function getFinalRank(totalScore) {
+    if (totalScore >= 50000) {
+        return {
+            title: "COSMIC LEGEND",
+            description: "You've achieved the impossible! Your puzzle-solving skills are legendary across the galaxy.",
+            color: "#FFD700" // Gold
+        };
+    } else if (totalScore >= 40000) {
+        return {
+            title: "SPACE ADMIRAL", 
+            description: "Exceptional mastery! You command respect throughout the star systems.",
+            color: "#C0C0C0" // Silver
+        };
+    } else if (totalScore >= 30000) {
+        return {
+            title: "STELLAR CAPTAIN",
+            description: "Outstanding performance! You're a true leader among space explorers.",
+            color: "#CD7F32" // Bronze
+        };
+    } else if (totalScore >= 25000) {
+        return {
+            title: "ORBITAL NAVIGATOR",
+            description: "Great job! Your navigation skills are highly valued in the fleet.",
+            color: "#00d9ff"
+        };
+    } else {
+        return {
+            title: "SPACE CADET",
+            description: "Well done! You've completed your training with flying colors.",
+            color: "#00ff88"
+        };
+    }
 }
 
 // ===== SHOW ANSWER FUNCTIONALITY =====
@@ -1462,14 +1800,36 @@ function initializeTouchFeedback() {
     // This is handled in createTileElement function
 }
 
-// ===== MOBILE ORIENTATION HANDLER =====
+// ===== ENHANCED MOBILE ORIENTATION HANDLER =====
 function handleOrientationChange() {
     // Force layout recalculation after orientation change
     setTimeout(() => {
         renderGrid();
         updateDisplay();
+        
+        // Adjust viewport height for mobile browsers
+        if (window.innerWidth <= 768) {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            
+            // Log mobile optimization info
+            console.log(`📱 Mobile viewport: ${window.innerWidth}x${window.innerHeight}, --vh: ${vh}px`);
+        }
     }, 100);
 }
 
+// Enhanced resize handler with throttling
+let resizeTimeout;
+function handleResize() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(handleOrientationChange, 150);
+}
+
 window.addEventListener('orientationchange', handleOrientationChange);
-window.addEventListener('resize', handleOrientationChange);
+window.addEventListener('resize', handleResize);
+
+// Set initial viewport height for mobile
+if (window.innerWidth <= 768) {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
