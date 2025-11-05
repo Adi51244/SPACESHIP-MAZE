@@ -524,10 +524,9 @@ function loadLevel(levelNum) {
     gameState.timeRemaining = level.timeLimit;
     gameState.showAnswerAllowed = false;
     
-    // Generate tiles for this level if not already generated
-    if (!level.tiles) {
-        level.tiles = generateLevelTiles(levelNum);
-    }
+    // Always generate fresh random tiles for each level load
+    level.tiles = generateLevelTiles(levelNum);
+    console.log(`🎲 Generated fresh random layout for Level ${levelNum}`);
     // Copy tiles with their path configurations
     gameState.grid = level.tiles.map(t => ({
         ...t,
