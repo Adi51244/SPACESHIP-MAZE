@@ -1056,7 +1056,7 @@ function showFoundSolutionMatrix(foundPath) {
             </div>
             <div class="solution-actions">
                 <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Path View</button>
-                <button class="next-level-solution-btn" onclick="proceedToNextLevelFromSolution()">Next Level</button>
+                <button class="next-level-solution-btn" onclick="console.log('Next Level clicked from found path'); window.proceedToNextLevelFromSolution();">Next Level</button>
             </div>
             <div class="modal-watermark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1203,6 +1203,7 @@ function startGame() {
         if (gameState.timeRemaining <= Math.floor(gameState.timeLimit / 2) && !gameState.showAnswerAllowed) {
             gameState.showAnswerAllowed = true;
             updateShowAnswerButton();
+            console.log(`✅ Show Answer button enabled at ${gameState.timeRemaining}s (half of ${gameState.timeLimit}s)`);
         }
         
         if (gameState.timeRemaining <= 0) {
@@ -1657,14 +1658,44 @@ function updateShowAnswerButton() {
 }
 
 function showAnswer() {
-    if (!gameState.showAnswerAllowed) return;
+    if (!gameState.showAnswerAllowed) {
+        console.log('⏰ Show Answer not allowed yet - wait for timer');
+        return;
+    }
 
-    // Compute optimal Manhattan shortest path ignoring current arrows
-    const path = bfsManhattanShortestPath();
+    console.log('🔍 Generating optimal solution...');
+    
+    // Generate a valid solution with proper arrow configurations
+    const solution = generateOptimalSolution();
     clearPathHighlights();
-    if (path) {
-        applyPathToTiles(path, 'optimal-path'); // color golden per CSS
-        showOptimalSolutionMatrix(path);
+    
+    if (solution && solution.path) {
+        // Apply the solution configuration to tiles
+        solution.tileConfigs.forEach(config => {
+            const tile = gameState.grid[config.index];
+            if (tile) {
+                tile.pathType = config.pathType;
+                tile.arrows = [...config.arrows];
+                tile.rotation = config.rotation || 0;
+            }
+        });
+        
+        // Re-render grid with solution
+        renderGrid();
+        
+        // Highlight the optimal path
+        applyPathToTiles(solution.path, 'optimal-path');
+        showOptimalSolutionMatrix(solution.path);
+        
+        console.log('✅ Optimal solution displayed!');
+    } else {
+        console.log('❌ Could not generate valid solution');
+        // Fallback to basic shortest path
+        const path = bfsManhattanShortestPath();
+        if (path) {
+            applyPathToTiles(path, 'optimal-path');
+            showOptimalSolutionMatrix(path);
+        }
     }
 }
 
@@ -1768,7 +1799,7 @@ function showOptimalSolutionMatrix(optimalPath) {
             </div>
             <div class="solution-actions">
                 <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Solution</button>
-                <button class="next-level-solution-btn" onclick="proceedToNextLevelFromSolution()">Next Level</button>
+                <button class="next-level-solution-btn" onclick="console.log('Next Level clicked from solution'); window.proceedToNextLevelFromSolution();">Next Level</button>
             </div>
             <div class="modal-watermark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1827,6 +1858,152 @@ function getRequiredDirectionsForTile(tileIndex, path, rows, cols) {
 }
 
 // Manhattan BFS ignoring arrows
+// Generate optimal solution with proper tile configurations
+function generateOptimalSolution() {
+    const { rows, cols } = gameState.gridSize;
+    const startIdx = gameState.startPos.row * cols + gameState.startPos.col;
+    const endIdx = gameState.endPos.row * cols + gameState.endPos.col;
+    
+    // First, find the shortest path ignoring current arrows
+    const shortestPath = findShortestPathCoordinates();
+    if (!shortestPath) return null;
+    
+    const tileConfigs = [];
+    
+    // Configure each tile on the path with proper arrows
+    for (let i = 0; i < shortestPath.length; i++) {
+        const currentIdx = shortestPath[i];
+        const tile = gameState.grid[currentIdx];
+        if (!tile || tile.type === TILE_TYPES.EMPTY) continue;
+        
+        const requiredDirections = [];
+        
+        // Determine required directions based on path
+        if (i > 0) {
+            // Arrow pointing FROM previous tile
+            const prevIdx = shortestPath[i - 1];
+            const direction = getDirectionBetweenIndices(prevIdx, currentIdx, cols);
+            if (direction) requiredDirections.push(getOppositeDirection(direction));
+        }
+        
+        if (i < shortestPath.length - 1) {
+            // Arrow pointing TO next tile
+            const nextIdx = shortestPath[i + 1];
+            const direction = getDirectionBetweenIndices(currentIdx, nextIdx, cols);
+            if (direction) requiredDirections.push(direction);
+        }
+        
+        // Configure tile based on required directions
+        let pathType = PATH_TYPES.STRAIGHT;
+        let arrows = requiredDirections;
+        
+        if (requiredDirections.length === 2) {
+            // Check if it's a corner or straight
+            const [dir1, dir2] = requiredDirections;
+            if ((dir1 === DIRECTIONS.UP && dir2 === DIRECTIONS.DOWN) || 
+                (dir1 === DIRECTIONS.DOWN && dir2 === DIRECTIONS.UP) ||
+                (dir1 === DIRECTIONS.LEFT && dir2 === DIRECTIONS.RIGHT) ||
+                (dir1 === DIRECTIONS.RIGHT && dir2 === DIRECTIONS.LEFT)) {
+                pathType = PATH_TYPES.STRAIGHT;
+            } else {
+                pathType = PATH_TYPES.CORNER;
+            }
+        } else if (requiredDirections.length === 3) {
+            pathType = PATH_TYPES.T_JUNCTION;
+        }
+        
+        tileConfigs.push({
+            index: currentIdx,
+            pathType: pathType,
+            arrows: arrows,
+            rotation: 0
+        });
+    }
+    
+    return {
+        path: shortestPath,
+        tileConfigs: tileConfigs
+    };
+}
+
+function findShortestPathCoordinates() {
+    const { rows, cols } = gameState.gridSize;
+    const startIdx = gameState.startPos.row * cols + gameState.startPos.col;
+    const endIdx = gameState.endPos.row * cols + gameState.endPos.col;
+    
+    // Simple BFS to find shortest path through available tiles
+    const queue = [startIdx];
+    const visited = new Set([startIdx]);
+    const parent = new Map();
+    const deltas = [
+        [-1, 0], // UP
+        [0, 1],  // RIGHT  
+        [1, 0],  // DOWN
+        [0, -1]  // LEFT
+    ];
+    
+    while (queue.length > 0) {
+        const current = queue.shift();
+        
+        if (current === endIdx) {
+            // Reconstruct path
+            const path = [];
+            let node = endIdx;
+            while (node !== undefined) {
+                path.unshift(node);
+                node = parent.get(node);
+            }
+            return path;
+        }
+        
+        const currentRow = Math.floor(current / cols);
+        const currentCol = current % cols;
+        
+        for (const [dr, dc] of deltas) {
+            const newRow = currentRow + dr;
+            const newCol = currentCol + dc;
+            
+            if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols) continue;
+            
+            const newIdx = newRow * cols + newCol;
+            if (visited.has(newIdx)) continue;
+            
+            const tile = gameState.grid[newIdx];
+            if (!tile || tile.type === TILE_TYPES.EMPTY) continue;
+            
+            visited.add(newIdx);
+            parent.set(newIdx, current);
+            queue.push(newIdx);
+        }
+    }
+    
+    return null; // No path found
+}
+
+function getDirectionBetweenIndices(fromIdx, toIdx, cols) {
+    const fromRow = Math.floor(fromIdx / cols);
+    const fromCol = fromIdx % cols;
+    const toRow = Math.floor(toIdx / cols);
+    const toCol = toIdx % cols;
+    
+    if (toRow < fromRow) return DIRECTIONS.UP;
+    if (toRow > fromRow) return DIRECTIONS.DOWN;
+    if (toCol > fromCol) return DIRECTIONS.RIGHT;
+    if (toCol < fromCol) return DIRECTIONS.LEFT;
+    
+    return null;
+}
+
+function getOppositeDirection(direction) {
+    switch (direction) {
+        case DIRECTIONS.UP: return DIRECTIONS.DOWN;
+        case DIRECTIONS.DOWN: return DIRECTIONS.UP;
+        case DIRECTIONS.LEFT: return DIRECTIONS.RIGHT;
+        case DIRECTIONS.RIGHT: return DIRECTIONS.LEFT;
+        default: return direction;
+    }
+}
+
 function bfsManhattanShortestPath() {
     const { rows, cols } = gameState.gridSize;
     const startIdx = gameState.startPos.row * cols + gameState.startPos.col;
