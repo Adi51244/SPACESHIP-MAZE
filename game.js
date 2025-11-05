@@ -1,7 +1,7 @@
-// ===== SPACESHIP MAZE PUZZLE GAME v2.7 =====
-console.log('🚀 Game script v2.7 loaded successfully!');
+// ===== SPACESHIP MAZE PUZZLE GAME v2.8 =====
+console.log('🚀 Game script v2.8 loaded successfully!');
 console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting, 3-minute timer');
-console.log('🔧 Fixed: Comprehensive dynamic element cleanup system implemented');
+console.log('🔧 Fixed: Initialization protection and event listener deduplication system');
 
 // ===== GAME STATE =====
 const gameState = {
@@ -167,30 +167,31 @@ const levels = [
     }
 ];
 
-// ===== GLOBAL CLEANUP FUNCTION =====
+// ===== SELECTIVE CLEANUP FUNCTION =====
 function cleanupDynamicElements() {
-    // Remove all dynamically created modals
-    const dynamicModals = document.querySelectorAll('.modal.active');
-    dynamicModals.forEach(modal => {
-        if (modal.parentNode) {
-            modal.remove();
+    // Only remove specific temporary elements, not core game elements
+    const temporaryElements = document.querySelectorAll('.floating-message, .message-overlay, .success-message, .path-found-message');
+    temporaryElements.forEach(element => {
+        if (element.parentNode) {
+            element.remove();
         }
     });
     
-    // Remove all floating messages
-    const messages = document.querySelectorAll('.floating-message, .message-overlay, .success-message, .path-found-message');
-    messages.forEach(msg => {
-        if (msg.parentNode) {
-            msg.remove();
-        }
-    });
-    
-    console.log('🧹 Cleaned up dynamic elements');
+    console.log('🧹 Cleaned up temporary elements:', temporaryElements.length);
 }
 
 // ===== INITIALIZATION =====
+let gameInitialized = false;
+
 document.addEventListener('DOMContentLoaded', () => {
-    cleanupDynamicElements(); // Clean up any existing elements
+    if (gameInitialized) {
+        console.log('⚠️ Game already initialized, skipping...');
+        return;
+    }
+    
+    gameInitialized = true;
+    console.log('🚀 Initializing game for the first time...');
+    
     initializeGame();
     setupEventListeners();
     initializeTouchFeedback();
@@ -205,8 +206,16 @@ function initializeGame() {
 function setupEventListeners() {
     console.log('🔧 Setting up event listeners...');
     
+    // Clear any existing event listeners by cloning elements (nuclear option)
+    const rulesBtn = document.getElementById('rulesBtn');
+    if (rulesBtn && rulesBtn._listenerAdded) {
+        console.log('⚠️ Event listeners already added, skipping...');
+        return;
+    }
+    
     // Rules modal
     document.getElementById('rulesBtn').addEventListener('click', showRulesModal);
+    document.getElementById('rulesBtn')._listenerAdded = true;
     document.getElementById('closeModal').addEventListener('click', hideRulesModal);
     document.getElementById('startGameBtn').addEventListener('click', () => {
         hideRulesModal();
@@ -216,23 +225,30 @@ function setupEventListeners() {
     // Control buttons
     const rotateBtn = document.getElementById('rotateBtn');
     const arrowBtn = document.getElementById('arrowBtn');
+    const showPathBtn = document.getElementById('showPathBtn');
     
-    if (rotateBtn) {
+    if (rotateBtn && !rotateBtn._listenerAdded) {
         rotateBtn.addEventListener('click', rotateTile);
+        rotateBtn._listenerAdded = true;
         console.log('✅ Rotate button event listener added');
     } else {
-        console.error('❌ Rotate button not found!');
+        console.log('⚠️ Rotate button already has listener or not found');
     }
     
-    if (arrowBtn) {
+    if (arrowBtn && !arrowBtn._listenerAdded) {
         arrowBtn.addEventListener('click', changeArrowDirection);
+        arrowBtn._listenerAdded = true;
         console.log('✅ Arrow button event listener added');
     } else {
-        console.error('❌ Arrow button not found!');
+        console.log('⚠️ Arrow button already has listener or not found');
     }
-    const showPathBtn = document.getElementById('showPathBtn');
-    if (showPathBtn) {
+    
+    if (showPathBtn && !showPathBtn._listenerAdded) {
         showPathBtn.addEventListener('click', showPath);
+        showPathBtn._listenerAdded = true;
+        console.log('✅ Show Path button event listener added');
+    } else {
+        console.log('⚠️ Show Path button already has listener or not found');
     }
     document.getElementById('resetBtn').addEventListener('click', resetLevel);
     document.getElementById('nextLevelBtn').addEventListener('click', () => {
@@ -619,7 +635,6 @@ function getOppositeDirection(direction) {
 }
 
 function showPath() {
-    cleanupDynamicElements(); // Clean up before showing new content
     clearPathHighlights();
     const path = followPathFromStart();
     if (!path) {
