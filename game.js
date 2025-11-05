@@ -1,7 +1,7 @@
-// ===== SPACESHIP MAZE PUZZLE GAME v2.6 =====
-console.log('🚀 Game script v2.6 loaded successfully!');
+// ===== SPACESHIP MAZE PUZZLE GAME v2.7 =====
+console.log('🚀 Game script v2.7 loaded successfully!');
 console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting, 3-minute timer');
-console.log('🔧 Fixed: Duplicate initialization and modal cleanup issues resolved');
+console.log('🔧 Fixed: Comprehensive dynamic element cleanup system implemented');
 
 // ===== GAME STATE =====
 const gameState = {
@@ -167,8 +167,30 @@ const levels = [
     }
 ];
 
+// ===== GLOBAL CLEANUP FUNCTION =====
+function cleanupDynamicElements() {
+    // Remove all dynamically created modals
+    const dynamicModals = document.querySelectorAll('.modal.active');
+    dynamicModals.forEach(modal => {
+        if (modal.parentNode) {
+            modal.remove();
+        }
+    });
+    
+    // Remove all floating messages
+    const messages = document.querySelectorAll('.floating-message, .message-overlay, .success-message, .path-found-message');
+    messages.forEach(msg => {
+        if (msg.parentNode) {
+            msg.remove();
+        }
+    });
+    
+    console.log('🧹 Cleaned up dynamic elements');
+}
+
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
+    cleanupDynamicElements(); // Clean up any existing elements
     initializeGame();
     setupEventListeners();
     initializeTouchFeedback();
@@ -597,6 +619,7 @@ function getOppositeDirection(direction) {
 }
 
 function showPath() {
+    cleanupDynamicElements(); // Clean up before showing new content
     clearPathHighlights();
     const path = followPathFromStart();
     if (!path) {
@@ -609,6 +632,7 @@ function showPath() {
     
     // Show success message with option to view matrix
     const message = document.createElement('div');
+    message.className = 'path-found-message';
     message.style.cssText = `
         position: fixed;
         top: 50%;
@@ -791,8 +815,10 @@ function getNextPosition(row, col, direction) {
 }
 
 function showInvalidPathMessage() {
+    cleanupDynamicElements(); // Clean up before showing new message
     // Create temporary message
     const message = document.createElement('div');
+    message.className = 'floating-message';
     message.style.cssText = `
         position: fixed;
         top: 50%;
@@ -961,6 +987,7 @@ function resetLevel() {
 }
 
 function nextLevel() {
+    cleanupDynamicElements(); // Clean up before transition
     hideSuccessModal();
     stopTimer();
     gameState.gameStarted = false;
@@ -978,6 +1005,7 @@ function nextLevel() {
     } else {
         // Show level transition message
         const message = document.createElement('div');
+        message.className = 'message-overlay';
         message.style.cssText = `
             position: fixed;
             top: 50%;
@@ -1047,6 +1075,7 @@ function hideSuccessModal() {
 }
 
 function showOptimalPathOnTimeout() {
+    cleanupDynamicElements(); // Clean up before showing timeout content
     // Clear any existing highlights
     clearPathHighlights();
     
@@ -1063,6 +1092,7 @@ function showOptimalPathOnTimeout() {
         
         // Show brief timeout message
         const message = document.createElement('div');
+        message.className = 'success-message';
         message.style.cssText = `
             position: fixed;
             top: 30%;
