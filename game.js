@@ -459,17 +459,17 @@ function setupEventListeners() {
         console.log('✅ Next Level button (success modal) event listener added');
     }
     
-    // Skip Level button (from control panel) - single event listener
+    // Next Level button (from control panel) - single event listener
     const skipLevelBtn = document.getElementById('skipLevelBtn');
     if (skipLevelBtn && !skipLevelBtn._listenerAdded) {
         skipLevelBtn.addEventListener('click', () => {
-            console.log('Skip Level button clicked from control panel');
+            console.log('Next Level button clicked from control panel');
             stopTimer();
             gameState.gameStarted = false;
             nextLevel();
         });
         skipLevelBtn._listenerAdded = true;
-        console.log('✅ Skip Level button (control panel) event listener added');
+        console.log('✅ Next Level button (control panel) event listener added');
     }
     
     // Show Answer button
@@ -923,9 +923,13 @@ function showPath() {
     }
 }
 
-// Global function for the button click
+// Global functions for button clicks
 window.showFoundPathMatrix = function(pathArray) {
     showFoundSolutionMatrix(pathArray);
+};
+
+window.proceedToNextLevelFromSolution = function() {
+    proceedToNextLevelFromSolution();
 };
 
 function showFoundSolutionMatrix(foundPath) {
@@ -1028,7 +1032,10 @@ function showFoundSolutionMatrix(foundPath) {
                     }).join(' → ')}
                 </div>
             </div>
-            <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Path View</button>
+            <div class="solution-actions">
+                <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Path View</button>
+                <button class="next-level-solution-btn" onclick="proceedToNextLevelFromSolution()">Next Level</button>
+            </div>
             <div class="modal-watermark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
@@ -1294,6 +1301,69 @@ function nextLevel() {
     }
 }
 
+// ===== PROCEED TO NEXT LEVEL FROM SOLUTION =====
+function proceedToNextLevelFromSolution() {
+    // Remove any active solution modals
+    const existingModals = document.querySelectorAll('.modal.active');
+    existingModals.forEach(modal => modal.remove());
+    
+    // Calculate and save score for current level
+    const levelScore = calculateScore();
+    gameState.score += levelScore;
+    
+    console.log(`💾 Level ${gameState.currentLevel} completed from solution view:`);
+    console.log(`📊 Moves: ${gameState.moves}, Optimal: ${gameState.optimalMoves}`);
+    console.log(`🏆 Score: ${levelScore}, Total: ${gameState.score}`);
+    
+    // Clean up and proceed to next level
+    cleanupDynamicElements();
+    stopTimer();
+    gameState.gameStarted = false;
+    
+    // Check if already at max level
+    if (gameState.currentLevel >= levels.length) {
+        showGameCompleteModal();
+        return;
+    }
+    
+    gameState.currentLevel++;
+    
+    if (gameState.currentLevel > levels.length) {
+        showGameCompleteModal();
+    } else {
+        // Show level transition message with score
+        const message = document.createElement('div');
+        message.className = 'message-overlay';
+        message.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.95), rgba(0, 217, 255, 0.95));
+            color: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 2000;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            text-align: center;
+        `;
+        message.innerHTML = `
+            ✅ Level Completed!<br>
+            🏆 Score: +${levelScore.toLocaleString()}<br>
+            🚀 Advancing to Level ${gameState.currentLevel}!
+        `;
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+            message.remove();
+        }, 2500);
+        
+        loadLevel(gameState.currentLevel);
+    }
+}
+
 // ===== DISPLAY UPDATES =====
 function updateDisplay() {
     const levelElement = document.getElementById('levelDisplay');
@@ -1321,7 +1391,7 @@ function updateDisplay() {
         }
     }
     
-    // Update skip level button state (control panel)
+    // Update next level button state (control panel)
     const skipLevelBtn = document.getElementById('skipLevelBtn');
     if (skipLevelBtn) {
         skipLevelBtn.disabled = gameState.currentLevel >= levels.length;
@@ -1331,7 +1401,7 @@ function updateDisplay() {
                 span.textContent = 'COMPLETE!';
                 skipLevelBtn.style.background = 'linear-gradient(135deg, #00ff88, #00d9ff)';
             } else {
-                span.textContent = 'Skip Level';
+                span.textContent = 'Next Level';
                 skipLevelBtn.style.background = '';
             }
         }
@@ -1674,7 +1744,10 @@ function showOptimalSolutionMatrix(optimalPath) {
                     }).join(' → ')}
                 </div>
             </div>
-            <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Solution</button>
+            <div class="solution-actions">
+                <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Solution</button>
+                <button class="next-level-solution-btn" onclick="proceedToNextLevelFromSolution()">Next Level</button>
+            </div>
             <div class="modal-watermark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
