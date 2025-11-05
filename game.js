@@ -1,14 +1,14 @@
-// ===== SPACESHIP MAZE PUZZLE GAME v2.3 =====
-console.log('🚀 Game script v2.3 loaded successfully!');
-console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting');
+// ===== SPACESHIP MAZE PUZZLE GAME v2.4 =====
+console.log('🚀 Game script v2.4 loaded successfully!');
+console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting, 3-minute timer');
 
 // ===== GAME STATE =====
 const gameState = {
     currentLevel: 1,
     moves: 0,
     score: 0,
-    timeLimit: 60, // 1 minute in seconds
-    timeRemaining: 60,
+    timeLimit: 180, // 3 minutes in seconds
+    timeRemaining: 180,
     timerInterval: null,
     selectedTile: null,
     grid: [],
@@ -125,7 +125,7 @@ const levels = [
         startPos: { row: 2, col: 0 },
         endPos: { row: 1, col: 3 },
         optimalMoves: 6,
-        timeLimit: 60,
+        timeLimit: 180,
         tiles: null
     },
     {
@@ -134,7 +134,7 @@ const levels = [
         startPos: { row: 2, col: 0 },
         endPos: { row: 2, col: 4 },
         optimalMoves: 8,
-        timeLimit: 60,
+        timeLimit: 180,
         tiles: null
     },
     {
@@ -143,7 +143,7 @@ const levels = [
         startPos: { row: 2, col: 0 },
         endPos: { row: 3, col: 4 },
         optimalMoves: 10,
-        timeLimit: 60,
+        timeLimit: 180,
         tiles: null
     },
     {
@@ -152,7 +152,7 @@ const levels = [
         startPos: { row: 2, col: 0 },
         endPos: { row: 3, col: 5 },
         optimalMoves: 12,
-        timeLimit: 60,
+        timeLimit: 180,
         tiles: null
     },
     {
@@ -161,7 +161,7 @@ const levels = [
         startPos: { row: 3, col: 0 },
         endPos: { row: 2, col: 5 },
         optimalMoves: 15,
-        timeLimit: 60,
+        timeLimit: 180,
         tiles: null
     }
 ];
@@ -752,6 +752,13 @@ function showFoundSolutionMatrix(foundPath) {
                 </div>
             </div>
             <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Path View</button>
+            <div class="modal-watermark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>Created by Adi51244</span>
+            </div>
         </div>
     `;
     
@@ -1234,6 +1241,13 @@ function showOptimalSolutionMatrix(optimalPath) {
                 </div>
             </div>
             <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Solution</button>
+            <div class="modal-watermark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>Created by Adi51244</span>
+            </div>
         </div>
     `;
     
