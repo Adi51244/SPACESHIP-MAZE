@@ -572,34 +572,57 @@ function renderGrid() {
     gameState.grid.forEach((tile, index) => {
         const tileElement = createTileElement(tile, index);
         
-        // Add start indicator (spaceship)
+        // Add start indicator (spaceship emoji)
         const startIndex = gameState.startPos.row * cols + gameState.startPos.col;
         if (index === startIndex) {
             console.log('🚀 Adding spaceship at index:', index, 'position:', gameState.startPos);
             const startMarker = document.createElement('div');
             startMarker.className = 'start-marker';
-            startMarker.innerHTML = `
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L3 7l9 5 9-5-9-5Z" fill="#00D9FF"/>
-                    <path d="M3 12l9 5 9-5" stroke="#00D9FF" stroke-width="2"/>
-                    <circle cx="12" cy="12" r="2" fill="#0A0E27"/>
-                </svg>`;
-            startMarker.style.cssText = 'position: absolute; left: -45px; top: 50%; transform: translateY(-50%); font-size: 32px; z-index: 100;';
+            startMarker.innerHTML = '🚀';
+            
+            // Mobile responsive positioning
+            const isMobile = window.innerWidth <= 768;
+            const isSmallMobile = window.innerWidth <= 480;
+            const markerSize = isSmallMobile ? '18px' : (isMobile ? '22px' : '28px');
+            const leftOffset = isSmallMobile ? '-22px' : (isMobile ? '-28px' : '-38px');
+            
+            startMarker.style.cssText = `
+                position: absolute; 
+                left: ${leftOffset}; 
+                top: 50%; 
+                transform: translateY(-50%); 
+                font-size: ${markerSize}; 
+                z-index: 100;
+                text-shadow: 0 0 10px rgba(0, 217, 255, 0.8);
+                animation: rocketFloat 2s ease-in-out infinite;
+            `;
             tileElement.appendChild(startMarker);
         }
         
-        // Add end indicator (earth)
+        // Add end indicator (earth emoji)
         const endIndex = gameState.endPos.row * cols + gameState.endPos.col;
         if (index === endIndex) {
             console.log('🌍 Adding earth at index:', index, 'position:', gameState.endPos);
             const endMarker = document.createElement('div');
             endMarker.className = 'end-marker';
-            endMarker.innerHTML = `
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="10" fill="#00FF88"/>
-                    <path d="M7 12h10M12 7v10" stroke="#0A0E27" stroke-width="2" stroke-linecap="round"/>
-                </svg>`;
-            endMarker.style.cssText = 'position: absolute; right: -45px; top: 50%; transform: translateY(-50%); font-size: 32px; z-index: 100;';
+            endMarker.innerHTML = '🌍';
+            
+            // Mobile responsive positioning
+            const isMobile = window.innerWidth <= 768;
+            const isSmallMobile = window.innerWidth <= 480;
+            const markerSize = isSmallMobile ? '18px' : (isMobile ? '22px' : '28px');
+            const rightOffset = isSmallMobile ? '-22px' : (isMobile ? '-28px' : '-38px');
+            
+            endMarker.style.cssText = `
+                position: absolute; 
+                right: ${rightOffset}; 
+                top: 50%; 
+                transform: translateY(-50%); 
+                font-size: ${markerSize}; 
+                z-index: 100;
+                text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+                animation: earthSpin 3s linear infinite;
+            `;
             tileElement.appendChild(endMarker);
         }
         
@@ -1921,10 +1944,40 @@ function handleOrientationChange() {
             const vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
             
+            // Update marker sizes for new screen size
+            updateMarkerSizes();
+            
+            // Re-render grid with new responsive sizing  
+            if (gameState.grid && gameState.grid.length > 0) {
+                renderGrid();
+            }
+            
             // Log mobile optimization info
             console.log(`📱 Mobile viewport: ${window.innerWidth}x${window.innerHeight}, --vh: ${vh}px`);
         }
     }, 100);
+}
+
+// Update marker sizes for responsive design
+function updateMarkerSizes() {
+    const startMarkers = document.querySelectorAll('.start-marker');
+    const endMarkers = document.querySelectorAll('.end-marker');
+    
+    const isMobile = window.innerWidth <= 768;
+    const isSmallMobile = window.innerWidth <= 480;
+    const markerSize = isSmallMobile ? '18px' : (isMobile ? '22px' : '28px');
+    const leftOffset = isSmallMobile ? '-22px' : (isMobile ? '-28px' : '-38px');
+    const rightOffset = isSmallMobile ? '-22px' : (isMobile ? '-28px' : '-38px');
+    
+    startMarkers.forEach(marker => {
+        marker.style.fontSize = markerSize;
+        marker.style.left = leftOffset;
+    });
+    
+    endMarkers.forEach(marker => {
+        marker.style.fontSize = markerSize;
+        marker.style.right = rightOffset;
+    });
 }
 
 // Enhanced resize handler with throttling
