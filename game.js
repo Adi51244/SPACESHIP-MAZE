@@ -444,20 +444,41 @@ function setupEventListeners() {
         console.log('⚠️ Show Path button already has listener or not found');
     }
     document.getElementById('resetBtn').addEventListener('click', resetLevel);
-    document.getElementById('nextLevelBtn').addEventListener('click', () => {
-        stopTimer();
-        gameState.gameStarted = false;
-        nextLevel();
-    });
+    
+    // Next Level button (from success modal) - single event listener
+    const nextLevelBtn = document.getElementById('nextLevelBtn');
+    if (nextLevelBtn && !nextLevelBtn._listenerAdded) {
+        nextLevelBtn.addEventListener('click', () => {
+            console.log('Next Level button clicked from success modal');
+            hideSuccessModal();
+            stopTimer();
+            gameState.gameStarted = false;
+            nextLevel();
+        });
+        nextLevelBtn._listenerAdded = true;
+        console.log('✅ Next Level button (success modal) event listener added');
+    }
+    
+    // Skip Level button (from control panel) - single event listener
+    const skipLevelBtn = document.getElementById('skipLevelBtn');
+    if (skipLevelBtn && !skipLevelBtn._listenerAdded) {
+        skipLevelBtn.addEventListener('click', () => {
+            console.log('Skip Level button clicked from control panel');
+            stopTimer();
+            gameState.gameStarted = false;
+            nextLevel();
+        });
+        skipLevelBtn._listenerAdded = true;
+        console.log('✅ Skip Level button (control panel) event listener added');
+    }
     
     // Show Answer button
     const showAnswerBtn = document.getElementById('showAnswerBtn');
-    if (showAnswerBtn) {
+    if (showAnswerBtn && !showAnswerBtn._listenerAdded) {
         showAnswerBtn.addEventListener('click', showAnswer);
+        showAnswerBtn._listenerAdded = true;
+        console.log('✅ Show Answer button event listener added');
     }
-
-    // Success modal
-    document.getElementById('nextLevelBtn').addEventListener('click', nextLevel);
 
     // Game over modal
     document.getElementById('retryBtn').addEventListener('click', () => {
@@ -1287,16 +1308,32 @@ function updateDisplay() {
     document.getElementById('scoreDisplay').textContent = gameState.score;
     updateTimerDisplay();
     
-    // Update next level button state
+    // Update next level button state (success modal)
     const nextLevelBtn = document.getElementById('nextLevelBtn');
     if (nextLevelBtn) {
         nextLevelBtn.disabled = gameState.currentLevel >= levels.length;
         if (gameState.currentLevel >= levels.length) {
-            nextLevelBtn.querySelector('span').textContent = 'COMPLETE!';
+            nextLevelBtn.textContent = 'GAME COMPLETE!';
             nextLevelBtn.style.background = 'linear-gradient(135deg, #00ff88, #00d9ff)';
         } else {
-            nextLevelBtn.querySelector('span').textContent = 'Next Level';
+            nextLevelBtn.textContent = 'Next Level';
             nextLevelBtn.style.background = '';
+        }
+    }
+    
+    // Update skip level button state (control panel)
+    const skipLevelBtn = document.getElementById('skipLevelBtn');
+    if (skipLevelBtn) {
+        skipLevelBtn.disabled = gameState.currentLevel >= levels.length;
+        const span = skipLevelBtn.querySelector('span');
+        if (span) {
+            if (gameState.currentLevel >= levels.length) {
+                span.textContent = 'COMPLETE!';
+                skipLevelBtn.style.background = 'linear-gradient(135deg, #00ff88, #00d9ff)';
+            } else {
+                span.textContent = 'Skip Level';
+                skipLevelBtn.style.background = '';
+            }
         }
     }
 }

@@ -1,0 +1,36 @@
+# Git Commands to Upload to GitHub
+
+# 1. Navigate to your project folder
+cd "d:\Programs\Maze Spaceship Puzzle"
+
+# 2. Initialize git repository (if not already done)
+git init
+
+# 3. Add your remote repository
+git remote add origin https://github.com/Adi51244/SPACESHIP-MAZE.git
+
+# 4. Add all files
+git add index.html
+git add game.js
+git add styles.css
+git add README.md
+
+# 5. Commit the files
+git commit -m "Add Spaceship Maze Puzzle game with full features
+
+Features included:
+- Corner and T-junction path types
+- Rotation and arrow cycling controls
+- Complete matrix solution display
+- Mobile responsive design
+- Touch-friendly interface
+- Path highlighting and validation
+- Timer and scoring system
+- Multiple levels (1-5)
+- Keyboard shortcuts support"
+
+# 6. Push to GitHub
+git push -u origin main
+
+# Alternative if main branch doesn't exist:
+# git push -u origin master
