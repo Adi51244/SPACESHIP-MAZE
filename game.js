@@ -1,6 +1,7 @@
-// ===== SPACESHIP MAZE PUZZLE GAME v2.4 =====
-console.log('🚀 Game script v2.4 loaded successfully!');
+// ===== SPACESHIP MAZE PUZZLE GAME v2.5 =====
+console.log('🚀 Game script v2.5 loaded successfully!');
 console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting, 3-minute timer');
+console.log('🔧 Fixed: Duplicate initialization issue resolved');
 
 // ===== GAME STATE =====
 const gameState = {
@@ -170,6 +171,7 @@ const levels = [
 document.addEventListener('DOMContentLoaded', () => {
     initializeGame();
     setupEventListeners();
+    initializeTouchFeedback();
     showRulesModal();
 });
 
@@ -1395,13 +1397,13 @@ function addTouchFeedback(element) {
 }
 
 // Apply touch feedback to interactive elements
-document.addEventListener('DOMContentLoaded', () => {
+function initializeTouchFeedback() {
     // Add to control buttons
     document.querySelectorAll('.control-btn').forEach(addTouchFeedback);
     
     // Add to tiles (will be called when tiles are created)
     // This is handled in createTileElement function
-});
+}
 
 // ===== MOBILE ORIENTATION HANDLER =====
 function handleOrientationChange() {
