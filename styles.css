@@ -34,6 +34,73 @@ body {
     position: relative;
 }
 
+/* ===== PROFESSIONAL WATERMARK ===== */
+.watermark {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    pointer-events: none;
+    user-select: none;
+}
+
+.watermark-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.15), rgba(255, 0, 255, 0.10));
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 217, 255, 0.2);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.watermark:hover .watermark-content {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 217, 255, 0.4);
+}
+
+.watermark-logo {
+    color: var(--primary-color);
+    filter: drop-shadow(0 0 5px rgba(0, 217, 255, 0.6));
+    animation: logoGlow 3s ease-in-out infinite;
+}
+
+.watermark-text {
+    font-family: 'Orbitron', sans-serif;
+    line-height: 1.2;
+}
+
+.watermark-brand {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-shadow: 0 0 8px rgba(0, 217, 255, 0.5);
+    letter-spacing: 0.5px;
+}
+
+.watermark-subtitle {
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+@keyframes logoGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 5px rgba(0, 217, 255, 0.6));
+    }
+    50% { 
+        filter: drop-shadow(0 0 12px rgba(0, 217, 255, 0.9));
+    }
+}
+
 /* ===== ANIMATED STARFIELD BACKGROUND ===== */
 .stars, .stars2, .stars3 {
     position: fixed;
@@ -1591,6 +1658,31 @@ body {
     box-shadow: 0 5px 20px rgba(0, 217, 255, 0.6);
 }
 
+/* ===== MODAL WATERMARK ===== */
+.modal-watermark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 8px 0;
+    opacity: 0.6;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    color: var(--text-gray);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-watermark svg {
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.modal-watermark span {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
 /* Responsive adjustments for solution matrix */
 @media (max-width: 768px) {
     .solution-content {
@@ -1735,6 +1827,30 @@ body {
     .game-container {
         max-width: 100vw;
         overflow-x: hidden;
+    }
+
+    /* Watermark mobile adjustments */
+    .watermark {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .watermark-content {
+        padding: 6px 10px;
+        border-radius: 15px;
+    }
+    
+    .watermark-brand {
+        font-size: 10px;
+    }
+    
+    .watermark-subtitle {
+        font-size: 8px;
+    }
+    
+    .watermark-logo svg {
+        width: 16px;
+        height: 16px;
     }
 }
 

@@ -1,7 +1,7 @@
-// ===== SPACESHIP MAZE PUZZLE GAME v2.5 =====
-console.log('🚀 Game script v2.5 loaded successfully!');
+// ===== SPACESHIP MAZE PUZZLE GAME v2.6 =====
+console.log('🚀 Game script v2.6 loaded successfully!');
 console.log('Features: Path strips, Rotation, Arrow direction change, Corner/T paths, Path highlighting, 3-minute timer');
-console.log('🔧 Fixed: Duplicate initialization issue resolved');
+console.log('🔧 Fixed: Duplicate initialization and modal cleanup issues resolved');
 
 // ===== GAME STATE =====
 const gameState = {
@@ -658,6 +658,10 @@ window.showFoundPathMatrix = function(pathArray) {
 };
 
 function showFoundSolutionMatrix(foundPath) {
+    // Remove any existing solution modals first
+    const existingModals = document.querySelectorAll('.modal.active');
+    existingModals.forEach(modal => modal.remove());
+    
     // Similar to optimal solution matrix but for found paths
     const modal = document.createElement('div');
     modal.className = 'modal active';
@@ -1097,6 +1101,10 @@ function hideGameOverModal() {
 }
 
 function showGameCompleteModal() {
+    // Remove any existing modals first
+    const existingModals = document.querySelectorAll('.modal.active');
+    existingModals.forEach(modal => modal.remove());
+    
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
@@ -1149,6 +1157,10 @@ function showAnswer() {
 }
 
 function showOptimalSolutionMatrix(optimalPath) {
+    // Remove any existing solution modals first
+    const existingModals = document.querySelectorAll('.modal.active');
+    existingModals.forEach(modal => modal.remove());
+    
     // Create modal with complete solution matrix
     const modal = document.createElement('div');
     modal.className = 'modal active';
