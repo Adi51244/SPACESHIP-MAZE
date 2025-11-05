@@ -945,6 +945,32 @@ function showPath() {
     }
 }
 
+// Helper function to add event listeners to solution modals
+function addSolutionModalEventListeners(modal, modalType) {
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+        const closeBtn = modal.querySelector('.close-solution-btn');
+        const nextLevelBtn = modal.querySelector('.next-level-solution-btn');
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log(`🔒 Closing ${modalType} modal`);
+                modal.remove();
+            });
+        }
+        
+        if (nextLevelBtn) {
+            nextLevelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log(`⏭️ Next Level clicked from ${modalType} modal`);
+                modal.remove();
+                proceedToNextLevelFromSolution();
+            });
+        }
+    });
+}
+
 // Global functions for button clicks
 window.showFoundPathMatrix = function(pathArray) {
     showFoundSolutionMatrix(pathArray);
@@ -961,8 +987,9 @@ function showFoundSolutionMatrix(foundPath) {
     
     // Similar to optimal solution matrix but for found paths
     const modal = document.createElement('div');
-    modal.className = 'modal active';
+    modal.className = 'modal active found-path-modal';
     modal.style.zIndex = '3000';
+    modal.id = 'foundPathModal';
     
     const { rows, cols } = gameState.gridSize;
     
@@ -1055,8 +1082,8 @@ function showFoundSolutionMatrix(foundPath) {
                 </div>
             </div>
             <div class="solution-actions">
-                <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Path View</button>
-                <button class="next-level-solution-btn" onclick="console.log('Next Level clicked from found path'); window.proceedToNextLevelFromSolution();">Next Level</button>
+                <button class="close-solution-btn" id="closeFoundPathBtn">Close Path View</button>
+                <button class="next-level-solution-btn" id="nextLevelFoundPathBtn">Next Level</button>
             </div>
             <div class="modal-watermark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1069,6 +1096,9 @@ function showFoundSolutionMatrix(foundPath) {
     `;
     
     document.body.appendChild(modal);
+    
+    // Add event listeners for found path modal
+    addSolutionModalEventListeners(modal, 'found-path');
     
     // Add click outside to close
     modal.addEventListener('click', (e) => {
@@ -1326,6 +1356,8 @@ function nextLevel() {
 
 // ===== PROCEED TO NEXT LEVEL FROM SOLUTION =====
 function proceedToNextLevelFromSolution() {
+    console.log('🚀 proceedToNextLevelFromSolution called!');
+    
     // Remove any active solution modals
     const existingModals = document.querySelectorAll('.modal.active');
     existingModals.forEach(modal => modal.remove());
@@ -1706,8 +1738,9 @@ function showOptimalSolutionMatrix(optimalPath) {
     
     // Create modal with complete solution matrix
     const modal = document.createElement('div');
-    modal.className = 'modal active';
+    modal.className = 'modal active optimal-solution-modal';
     modal.style.zIndex = '3000';
+    modal.id = 'optimalSolutionModal';
     
     const { rows, cols } = gameState.gridSize;
     
@@ -1798,8 +1831,8 @@ function showOptimalSolutionMatrix(optimalPath) {
                 </div>
             </div>
             <div class="solution-actions">
-                <button class="close-solution-btn" onclick="this.parentElement.parentElement.remove()">Close Solution</button>
-                <button class="next-level-solution-btn" onclick="console.log('Next Level clicked from solution'); window.proceedToNextLevelFromSolution();">Next Level</button>
+                <button class="close-solution-btn" id="closeOptimalBtn">Close Solution</button>
+                <button class="next-level-solution-btn" id="nextLevelOptimalBtn">Next Level</button>
             </div>
             <div class="modal-watermark">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1812,6 +1845,9 @@ function showOptimalSolutionMatrix(optimalPath) {
     `;
     
     document.body.appendChild(modal);
+    
+    // Add event listeners for optimal solution modal
+    addSolutionModalEventListeners(modal, 'optimal-solution');
     
     // Add click outside to close
     modal.addEventListener('click', (e) => {
